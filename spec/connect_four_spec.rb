@@ -191,4 +191,86 @@ describe Board do
       expect(board[1][2]).not_to eq(' ')
     end
   end
+  describe '#win?' do
+    subject(:game_board) { described_class.new }
+    before do
+      allow(game_board).to receive(:column_win?).and_return(false)
+      allow(game_board).to receive(:row_win?).and_return(false)
+      allow(game_board).to receive(:diagonal_win?).and_return(false)
+    end
+    context 'calls methods correctly' do
+      it 'calls column_win?' do
+        expect(game_board).to receive(:column_win?).once
+        game_board.win?
+      end
+      it 'calls row_win?' do
+        expect(game_board).to receive(:column_win?).once
+        game_board.win?
+      end
+      it 'calls diagonal_win?' do
+        expect(game_board).to receive(:column_win?).once
+        game_board.win?
+      end
+    end
+    context 'with no win' do
+      it 'returns false' do
+        expect(game_board.win?).to eq(false)
+      end
+    end
+    context 'with just column win' do
+      it 'returns true' do
+        allow(game_board).to receive(:column_win?).and_return(true)
+        expect(game_board.win?).to eq(true)
+      end
+    end
+    context 'with just row win' do
+      it 'returns true' do
+        allow(game_board).to receive(:row_win?).and_return(true)
+        expect(game_board.win?).to eq(true)
+      end
+    end
+    context 'with just diagonal win' do
+      it 'returns true' do
+        allow(game_board).to receive(:diagonal_win?).and_return(true)
+        expect(game_board.win?).to eq(true)
+      end
+    end
+  end
+
+  describe '#row_win?' do
+    context 'with a row win' do
+      let(:row_board) { described_class.new }
+      before do
+        winner_row = [[' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], ['x', ' ', ' ', ' ', ' ', ' '], ['x', ' ', ' ', ' ', ' ', ' '], ['x', ' ', ' ', ' ', ' ', ' '], ['x', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ']]
+        row_board.instance_variable_set(:@board, winner_row)
+      end
+      it 'returns true' do
+        expect(row_board.row_win?).to eq(true)
+      end
+    end
+  end
+  describe 'column_win?' do
+    context 'with a col win' do
+      let(:col_board) { described_class.new }
+      before do
+        winner_col = [[' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', 'x', 'x', 'x', 'x', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ']]
+        col_board.instance_variable_set(:@board, winner_col)
+      end
+      it 'returns true' do
+        expect(col_board.column_win?).to eq(true)
+      end
+    end
+  end
+  describe 'diagonal_win?' do
+    context 'with a diagonal win' do
+      let(:diagonal_board) { described_class.new }
+      before do
+        winner_diagonal = [[' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', 'x', ' ', ' ', ' '], [' ', ' ', ' ', 'x', ' ', ' '], [' ', ' ', ' ', ' ', 'x', ' ']]
+        diagonal_board.instance_variable_set(:@board, winner_diagonal)
+      end
+      it 'returns true' do
+        expect(diagonal_board.diagonal_win?).to eq(true)
+      end
+    end
+  end
 end
