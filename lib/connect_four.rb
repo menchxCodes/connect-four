@@ -11,7 +11,8 @@ class Board
   def play
     moves = player_input
     # verify_input
-    select_move(@current_player, moves)
+    select_move(moves)
+    change_turn
   end
 
   def player_input
@@ -42,11 +43,25 @@ class Board
     @board[col][row] == ' '
   end
 
-  def select_move(player, move)
+  def select_move(move, player = @current_player)
+    col = move[0] - 1
+    row = move[1] - 1
+    player.moves.push(move)
+    @board[col][row] = player.sign
+  end
+
+  def change_turn
+    case @current_player
+    when @player_one
+      @current_player = @player_two
+    when @player_two
+      @current_player = @player_one
+    end
   end
 end
 
 class Player
+  attr_reader :name, :sign, :moves
   def initialize(name, sign)
     @name = name
     @sign = sign

@@ -82,6 +82,10 @@ describe Board do
         expect(game_board).to receive(:gets).once
         game_board.player_input
       end
+      it 'returns the moves correctly' do
+        moves = game_board.player_input
+        expect(moves).to eq([2, 3])
+      end
     end
     context 'receives incorrect input, then correct input' do
       it 'calls gets method twice' do
@@ -177,6 +181,14 @@ describe Board do
         invalid_move = game_board.valid_move?(['2', '2'])
         expect(invalid_move).to eq(false)
       end
+    end
+  end
+  describe '#select_move' do
+    subject(:game_board) { described_class.new }
+    it 'selects [2, 3] properly' do
+      game_board.select_move([2, 3])
+      board = game_board.instance_variable_get(:@board)
+      expect(board[1][2]).not_to eq(' ')
     end
   end
 end
