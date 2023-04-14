@@ -55,12 +55,45 @@ class Board
   end
 
   def column_win?(player = @current_player)
+    max_col = @board[0].size
+    @board.each_index do |col|
+      @board[col].each_index do |row|
+        is_win = @board[col][row] == player.sign && @board[col][row + 1] == player.sign && @board[col][row + 2] == player.sign && @board[col][row + 3] == player.sign unless row > max_col - 3
+        return true if is_win
+      end
+    end
+    false
   end
 
   def row_win?(player = @current_player)
+    max_row = @board.size
+    @board.each_index do |col|
+      @board[col].each_index do |row|
+        is_win = @board[col][row] == player.sign && @board[col + 1][row] == player.sign && @board[col + 2][row] == player.sign && @board[col + 3][row] == player.sign unless col > max_row - 3
+        return true if is_win
+      end
+    end
+    false
   end
 
   def diagonal_win?(player = @current_player)
+    max_col = @board[0].size
+    max_row = @board.size
+    @board.each_index do |col|
+      unless col > max_row - 3
+        @board[col].each_index do |row|
+          if row < max_col - 3
+            is_win = @board[col][row] == player.sign && @board[col + 1][row + 1] == player.sign && @board[col + 2][row + 2] == player.sign && @board[col + 3][row + 3] == player.sign
+
+          else
+            is_win = @board[col][row] == player.sign && @board[col + 1][row - 1] == player.sign && @board[col + 2][row - 2] == player.sign && @board[col + 3][row - 3] == player.sign
+
+          end
+          return true if is_win
+        end
+      end
+    end
+    false
   end
 
   def change_turn
