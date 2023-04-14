@@ -9,9 +9,9 @@ class Board
   end
 
   def play
-    move = player_input
-    verify_input
-    select_move(@current_player, move)
+    moves = player_input
+    # verify_input
+    select_move(@current_player, moves)
   end
 
   def player_input
@@ -21,20 +21,25 @@ class Board
       puts "Please enter two valid numbers between 1-#{@board.size} & 1-#{@board[0].size} seperated by a single space:"
       input = gets.chomp!
     end
-    input
+    moves = input.split(' ')
+    [moves[0].to_i, moves[1].to_i]
   end
 
   def valid_input?(input)
     moves = input.split(' ')
     max_col = @board.size
     max_row = @board[0].size
+    is_within_range = moves[0].to_i.between?(1, max_col) && moves[1].to_i.between?(1, max_row)
     return false if moves.size != 2
-    return true if moves[0].to_i.between?(1, max_col) && moves[1].to_i.between?(1, max_row)
+    return true if  is_within_range && valid_move?(moves)
 
     false
   end
 
-  def verify_input
+  def valid_move?(moves)
+    col = moves[0].to_i - 1
+    row = moves[1].to_i - 1
+    @board[col][row] == ' '
   end
 
   def select_move(player, move)

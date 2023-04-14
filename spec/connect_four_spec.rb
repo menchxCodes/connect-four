@@ -46,7 +46,7 @@ describe Board do
     subject(:game_board) { described_class.new }
     before do
       allow(game_board).to receive(:player_input)
-      allow(game_board).to receive(:verify_input)
+      # allow(game_board).to receive(:verify_input)
       allow(game_board).to receive(:select_move)
     end
 
@@ -56,12 +56,12 @@ describe Board do
         game_board.play
       end
     end
-    context "verifies current player's input" do
-      it 'calls #verify_input once' do
-        expect(game_board).to receive(:verify_input).once
-        game_board.play
-      end
-    end
+    # context "verifies current player's input" do
+    #   it 'calls #verify_input once' do
+    #     expect(game_board).to receive(:verify_input).once
+    #     game_board.play
+    #   end
+    # end
     context 'executes the move' do
       it 'calls #select_move once' do
         expect(game_board).to receive(:select_move).once
@@ -74,7 +74,7 @@ describe Board do
     subject(:game_board) { described_class.new }
     before do
       allow(game_board).to receive(:puts)
-      allow(game_board).to receive(:gets).and_return('2 3')
+      allow(game_board).to receive(:gets).and_return("2 3\n", "3 4\n")
       allow(game_board).to receive(:valid_input?).and_return(true)
     end
     context 'receives correct input' do
@@ -143,17 +143,39 @@ describe Board do
 
         context 'edge cases' do
           it '"7 6" returns true' do
+            allow(game_board).to receive(:valid_move?).and_return(true)
             valid_input = '7 6'
             is_valid = game_board.valid_input?(valid_input)
             expect(is_valid).to eq(true)
           end
 
           it '"8 7" returns false' do
+            # the mock below would never happen when the number is out of range
+            # but we pass true to isolate the range check
+            allow(game_board).to receive(:valid_move?).and_return(true)
             invalid_input = '8 7'
             is_valid = game_board.valid_input?(invalid_input)
             expect(is_valid).to eq(false)
           end
         end
+      end
+    end
+  end
+
+  describe '#valid_move?' do
+    subject(:game_board) { described_class.new }
+    context 'cell is empty' do
+      it 'returns true' do
+        game_board.instance_variable_set(:@board, [[" ", " ", " "], [" ", "x", " "]])
+        valid_move = game_board.valid_move?(['2','3'])
+        expect(valid_move).to eq(true)
+      end
+    end
+    context 'cell is taken' do
+      it 'returns false' do
+        game_board.instance_variable_set(:@board, [[" ", " ", " "], [" ", "x", " "]])
+        invalid_move = game_board.valid_move?(['2', '2'])
+        expect(invalid_move).to eq(false)
       end
     end
   end
