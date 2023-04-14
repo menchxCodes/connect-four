@@ -50,6 +50,19 @@ class Board
     @board[col][row] = player.sign
   end
 
+  def win?(player = @current_player)
+    column_win? || row_win? || diagonal_win?
+  end
+
+  def column_win?(player = @current_player)
+  end
+
+  def row_win?(player = @current_player)
+  end
+
+  def diagonal_win?(player = @current_player)
+  end
+
   def change_turn
     case @current_player
     when @player_one
