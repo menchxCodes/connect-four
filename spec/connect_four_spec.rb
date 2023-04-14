@@ -1,4 +1,5 @@
 require './lib/connect_four'
+
 describe Board do
   describe '#initialize' do
     subject(:game_board) { described_class.new }
@@ -37,6 +38,122 @@ describe Board do
         player_one = game_board.instance_variable_get(:@player_one)
         current_player = game_board.instance_variable_get(:@current_player)
         expect(current_player).to be(player_one)
+      end
+    end
+  end
+
+  describe '#play' do
+    subject(:game_board) { described_class.new }
+    before do
+      allow(game_board).to receive(:player_input)
+      allow(game_board).to receive(:verify_input)
+      allow(game_board).to receive(:select_move)
+    end
+
+    context "gets current player's input" do
+      it 'calls #player_input once' do
+        expect(game_board).to receive(:player_input).once
+        game_board.play
+      end
+    end
+    context "verifies current player's input" do
+      it 'calls #verify_input once' do
+        expect(game_board).to receive(:verify_input).once
+        game_board.play
+      end
+    end
+    context 'executes the move' do
+      it 'calls #select_move once' do
+        expect(game_board).to receive(:select_move).once
+        game_board.play
+      end
+    end
+  end
+
+  describe '#player_input' do
+    subject(:game_board) { described_class.new }
+    before do
+      allow(game_board).to receive(:puts)
+      allow(game_board).to receive(:gets).and_return('2 3')
+      allow(game_board).to receive(:valid_input?).and_return(true)
+    end
+    context 'receives correct input' do
+      it 'calls gets method once' do
+        expect(game_board).to receive(:gets).once
+        game_board.player_input
+      end
+    end
+    context 'receives incorrect input, then correct input' do
+      it 'calls gets method twice' do
+        allow(game_board).to receive(:valid_input?).and_return(false, true)
+        expect(game_board).to receive(:gets).twice
+        game_board.player_input
+      end
+    end
+  end
+
+  describe '#valid_input?' do
+    subject(:game_board) { described_class.new }
+    context 'input is invalid' do
+      context 'is more than 2 numbers' do
+        it 'returns false' do
+          invalid_input = '2 3 4'
+          is_valid = game_board.valid_input?(invalid_input)
+          expect(is_valid).to eq(false)
+        end
+      end
+
+      context 'is just one number' do
+        it 'returns false' do
+          invalid_input = '2'
+          is_valid = game_board.valid_input?(invalid_input)
+          expect(is_valid).to eq(false)
+        end
+      end
+
+      context 'includes characters' do
+        it 'returns false' do
+          invalid_input = 'a2 3'
+          is_valid = game_board.valid_input?(invalid_input)
+          expect(is_valid).to eq(false)
+        end
+      end
+    end
+    context 'input is valid' do
+      context 'is two numbers seperated by a single space' do
+        it 'retruns true' do
+          valid_input = '2 3'
+          is_valid = game_board.valid_input?(valid_input)
+          expect(is_valid).to eq(true)
+        end
+      end
+
+      context 'is between the boundries' do
+        it '"11 20" returns false' do
+          invalid_input = '11 20'
+          is_valid = game_board.valid_input?(invalid_input)
+          expect(is_valid).to eq(false)
+        end
+
+        it '"2 3" returns true' do
+          valid_input = '2 3'
+          is_valid = game_board.valid_input?(valid_input)
+          expect(is_valid).to eq(true)
+        end
+
+        context 'edge cases' do
+          it '"7 6" returns true' do
+            valid_input = '7 6'
+            is_valid = game_board.valid_input?(valid_input)
+            expect(is_valid).to eq(true)
+          end
+
+          it '"8 7" returns false' do
+            invalid_input = '8 7'
+            is_valid = game_board.valid_input?(invalid_input)
+            expect(is_valid).to eq(false)
+          end
+        end
       end
     end
   end
