@@ -240,33 +240,123 @@ describe Board do
   describe '#row_win?' do
     context 'with a row win' do
       let(:row_board) { described_class.new }
+      let(:row_player) { Player.new('test', 'x')}
       before do
         winner_row = [[' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], ['x', ' ', ' ', ' ', ' ', ' '], ['x', ' ', ' ', ' ', ' ', ' '], ['x', ' ', ' ', ' ', ' ', ' '], ['x', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ']]
         row_board.instance_variable_set(:@board, winner_row)
+        row_board.instance_variable_set(:@current_player, row_player)
       end
       it 'returns true' do
         expect(row_board.row_win?).to eq(true)
+      end
+    end
+    context 'with the last row win' do
+      let(:row_board) { described_class.new }
+      let(:row_player) { Player.new('test', 'x')}
+      before do
+        winner_row = [[' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', 'x'], [' ', ' ', ' ', ' ', ' ', 'x'], ['x', ' ', ' ', ' ', ' ', 'x'], [' ', ' ', ' ', ' ', ' ', 'x']]
+        row_board.instance_variable_set(:@board, winner_row)
+        row_board.instance_variable_set(:@current_player, row_player)
+      end
+      it 'returns true' do
+        expect(row_board.row_win?).to eq(true)
+      end
+    end
+    context 'without a row win' do
+      let(:row_board) { described_class.new }
+      let(:row_player) { Player.new('test', 'x')}
+      before do
+        loser_row = [[' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', 'x', 'x', 'x', ' '], [' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], ['x', ' ', ' ', ' ', ' ', ' ']]
+        row_board.instance_variable_set(:@board, loser_row)
+        row_board.instance_variable_set(:@current_player, row_player)
+      end
+      it 'returns false' do
+        expect(row_board.row_win?).to eq(false)
       end
     end
   end
   describe 'column_win?' do
     context 'with a col win' do
       let(:col_board) { described_class.new }
+      let(:col_player) { Player.new('test', 'x')}
       before do
-        winner_col = [[' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', 'x', 'x', 'x', 'x', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ']]
+        winner_col = [[' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', 'x', 'x', 'x', 'x'], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ']]
         col_board.instance_variable_set(:@board, winner_col)
+        col_board.instance_variable_set(:@current_player, col_player)
       end
       it 'returns true' do
         expect(col_board.column_win?).to eq(true)
       end
     end
+    context 'with the last col win' do
+      let(:col_board) { described_class.new }
+      let(:col_player) { Player.new('test', 'x')}
+      before do
+        winner_col = [[' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', 'x', 'x', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', 'x', 'x', 'x', 'x']]
+        col_board.instance_variable_set(:@board, winner_col)
+        col_board.instance_variable_set(:@current_player, col_player)
+      end
+      it 'returns true' do
+        expect(col_board.column_win?).to eq(true)
+      end
+    end
+    context 'without a col win' do
+      let(:col_board) { described_class.new }
+      let(:col_player) { Player.new('test', 'x')}
+      before do
+        loser_col = [[' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', 'x', 'x', 'x', ' '], [' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], ['x', ' ', ' ', ' ', ' ', ' ']]
+        col_board.instance_variable_set(:@board, loser_col)
+        col_board.instance_variable_set(:@current_player, col_player)
+      end
+      it 'returns false' do
+        expect(col_board.column_win?).to eq(false)
+      end
+    end
   end
   describe 'diagonal_win?' do
-    context 'with a diagonal win' do
+    context 'with a rising diagonal win' do
       let(:diagonal_board) { described_class.new }
+      let(:diagonal_player) { Player.new('test', 'x')}
       before do
         winner_diagonal = [[' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', 'x', ' ', ' ', ' '], [' ', ' ', ' ', 'x', ' ', ' '], [' ', ' ', ' ', ' ', 'x', ' ']]
         diagonal_board.instance_variable_set(:@board, winner_diagonal)
+        diagonal_board.instance_variable_set(:@current_player, diagonal_player)
+      end
+      it 'returns true' do
+        expect(diagonal_board.diagonal_win?).to eq(true)
+      end
+    end
+    context 'with the last rising diagonal win' do
+      let(:diagonal_board) { described_class.new }
+      let(:diagonal_player) { Player.new('test', 'x')}
+      before do
+        winner_diagonal = [[' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', 'x', ' ', ' ', ' '], [' ', ' ', ' ', 'x', ' ', ' '], [' ', ' ', ' ', ' ', 'x', ' '], [' ', ' ', ' ', ' ', ' ', 'x']]
+        diagonal_board.instance_variable_set(:@board, winner_diagonal)
+        diagonal_board.instance_variable_set(:@current_player, diagonal_player)
+      end
+      it 'returns true' do
+        expect(diagonal_board.diagonal_win?).to eq(true)
+      end
+    end
+    context 'with a falling diagonal win' do
+      let(:diagonal_board) { described_class.new }
+      let(:diagonal_player) { Player.new('test', 'x')}
+      before do
+        winner_diagonal = [[' ', ' ', ' ', ' ', 'x', ' '], [' ', ' ', ' ', 'x', ' ', ' '], [' ', ' ', 'x', ' ', ' ', ' '], [' ', 'x', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' ']]
+        diagonal_board.instance_variable_set(:@board, winner_diagonal)
+        diagonal_board.instance_variable_set(:@current_player, diagonal_player)
+      end
+      it 'returns true' do
+        expect(diagonal_board.diagonal_win?).to eq(true)
+      end
+    end
+    context 'with the last falling diagonal win' do
+      let(:diagonal_board) { described_class.new }
+      let(:diagonal_player) { Player.new('test', 'x')}
+      before do
+        winner_diagonal = [[' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', ' '], [' ', ' ', ' ', ' ', ' ', 'x'], [' ', ' ', ' ', ' ', 'x', ' '], [' ', ' ', ' ', 'x', ' ', ' '], [' ', ' ', 'x', ' ', ' ', ' ']]
+        diagonal_board.instance_variable_set(:@board, winner_diagonal)
+        diagonal_board.instance_variable_set(:@current_player, diagonal_player)
       end
       it 'returns true' do
         expect(diagonal_board.diagonal_win?).to eq(true)
