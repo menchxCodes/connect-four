@@ -6,13 +6,50 @@ class Board
     @player_one = Player.new(player_one, "\u26AA")
     @player_two = Player.new(player_two, "\u26AB")
     @current_player = @player_one
+    @turn = 0
   end
 
   def play
-    moves = player_input
-    # verify_input
-    select_move(moves)
-    change_turn
+    max_turn = @board.size * @board[0].size
+    until @turn == max_turn || win?
+      moves = player_input
+      select_move(moves)
+      print_board
+      if win?
+        puts "#{@current_player.name} win(s)!"
+        return
+      end
+
+      @turn += 1
+      if @turn == max_turn
+        puts 'draw!'
+        return
+      end
+
+      change_turn
+    end
+  end
+
+  def print_board
+    output_array = []
+    @board[0].each_index do |row|
+      output_string = "#{row + 1} |"
+      @board.each_index do |col|
+        output_string.concat(" #{@board[col][row]} |")
+      end
+      output_array << output_string
+    end
+    until output_array.empty?
+      puts output_array.pop
+      puts '--------------------------------'
+    end
+    index = 0
+    row_guide = '  |'
+    while index < board.size
+      row_guide.concat(" #{index + 1} |")
+      index += 1
+    end
+    puts row_guide
   end
 
   def player_input
